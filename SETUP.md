@@ -1,100 +1,69 @@
 # Setup Guide - TralaShop
 
-Quick setup guide for getting started with TralaShop development and deployment.
+Panduan singkat untuk development dan deployment (GitHub + Railway).
 
-## 🚀 Quick Start
-
-### 1. Clone Repository
-
+## 🚀 Quick Start (Lokal)
 ```bash
 git clone <repository-url>
 cd script
-```
-
-### 2. Install Dependencies (Optional)
-
-```bash
 npm install
+npm run dev   # http://localhost:3000
+# atau
+npx serve . -l 3000
 ```
 
-### 3. Run Locally
-
-```bash
-npm start
-# or
-npx serve .
-```
-
-Open http://localhost:3000 in your browser.
-
-## 📦 Project Structure
-
+## 📦 Struktur
 ```
 script/
-├── index.html              # Main HTML
-├── styles.css              # Styles
-├── script.js               # Main app
+├── index.html
+├── styles.css
+├── script.js
 ├── js/
-│   ├── config.js           # Config
-│   ├── utils.js             # Utilities
-│   ├── services/           # Business logic
-│   └── components/         # UI components
-└── .github/workflows/      # CI/CD
+│   ├── config.js
+│   ├── utils.js
+│   ├── services/
+│   └── components/
+└── package.json
 ```
 
-## 🔧 Development
+## 🔧 Skrip Penting
+- `npm run dev` / `npm start` : serve lokal
+- `npm run build`             : build statis (echo)
+- `npm run lint`              : lint JS
+- `npm run format`            : prettier
 
-### Local Development Server
-
+## 🌐 Deploy via GitHub + Railway (Static)
+1) Push ke GitHub
 ```bash
-# Using npm script
-npm run dev
-
-# Using serve directly
-npx serve . -l 3000
-
-# Using Python (if installed)
-python -m http.server 8000
+git init
+git remote add origin <repo-url>
+git add .
+git commit -m "Initial"
+git push -u origin main
 ```
+2) Railway Dashboard
+- New Project → Deploy from GitHub → pilih repo.
+- Root directory: `script` (jika repo punya folder ini) atau `.` jika langsung.
+- Build command: `npm run build`
+- Output directory: `.`
+- Tambah env jika perlu (mis. `API_BASE_URL`, `NODE_ENV=production`).
+- Deploy.
 
-### Code Quality
-
+3) Railway CLI (opsional)
 ```bash
-# Lint code
-npm run lint
-
-# Format code
-npm run format
+npm i -g @railway/cli
+railway login
+railway init    # pilih project / buat baru
+railway up      # deploy
 ```
+Gunakan konfigurasi sama: build `npm run build`, output `.`, root sesuai struktur.
 
-## 🌐 Deployment to Vercel
+## (Opsional) Vercel
+- Build: `npm run build`
+- Output: `.`
+- Root: `script` atau `.` sesuai repo
+- CLI: `npm i -g vercel && vercel && vercel --prod`
 
-### Option 1: Vercel Dashboard
-
-1. Push code to GitHub
-2. Go to [vercel.com](https://vercel.com)
-3. Click "New Project"
-4. Import GitHub repository
-5. Deploy!
-
-### Option 2: Vercel CLI
-
-```bash
-# Install CLI
-npm i -g vercel
-
-# Login
-vercel login
-
-# Deploy
-vercel
-```
-
-## 🔐 Environment Variables
-
-Set in Vercel Dashboard > Project Settings > Environment Variables:
-
-```
-NODE_ENV=production
-API_BASE_URL=https://api.tralashop.com
-```
+## 🔐 Environment Variables (opsional)
+- `API_BASE_URL=https://api.tralashop.com`
+- `NODE_ENV=production`
