@@ -1,12 +1,6 @@
 {
   "version": 2,
   "name": "tralalero-tralashop",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build"
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
@@ -56,5 +50,5 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  }
+  } 
 }
