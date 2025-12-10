@@ -10,9 +10,10 @@ class ProductCard {
      * @returns {string} HTML string
      */
     static create(product) {
-        const discountPercentage = product.originalPrice ? 
-            Utils.calculateDiscount(product.originalPrice, product.price) : 0;
-        
+        const discountPercentage = product.originalPrice
+            ? Utils.calculateDiscount(product.originalPrice, product.price)
+            : 0;
+
         return `
             <div class="product-card" data-product-id="${product.id}">
                 ${discountPercentage > 0 ? `<div class="product-badge sale">-${discountPercentage}%</div>` : ''}
@@ -41,7 +42,10 @@ class ProductCard {
                         <span class="rating-text">${product.rating} (${product.reviews} reviews)</span>
                     </div>
                     <div class="product-specs">
-                        ${product.specifications.slice(0, 2).map(spec => `<span class="spec-tag">${spec}</span>`).join('')}
+                        ${product.specifications
+                            .slice(0, 2)
+                            .map((spec) => `<span class="spec-tag">${spec}</span>`)
+                            .join('')}
                     </div>
                     <div class="product-price">
                         <span class="current-price">${Utils.formatCurrency(product.price)}</span>
@@ -64,11 +68,12 @@ class ProductCard {
         }
 
         if (products.length === 0) {
-            container.innerHTML = '<div class="no-products">No products found matching your criteria.</div>';
+            container.innerHTML =
+                '<div class="no-products">No products found matching your criteria.</div>';
             return;
         }
 
-        container.innerHTML = products.map(product => this.create(product)).join('');
+        container.innerHTML = products.map((product) => this.create(product)).join('');
     }
 }
 
@@ -78,4 +83,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.ProductCard = ProductCard;
 }
-

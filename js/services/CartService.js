@@ -20,17 +20,17 @@ class CartService {
             return false;
         }
 
-        const existingItem = this.cart.find(item => item.id === product.id);
-        
+        const existingItem = this.cart.find((item) => item.id === product.id);
+
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {
             this.cart.push({
                 ...product,
-                quantity: quantity
+                quantity: quantity,
             });
         }
-        
+
         this.saveCartToStorage();
         return true;
     }
@@ -42,13 +42,13 @@ class CartService {
      */
     removeFromCart(productId) {
         const initialLength = this.cart.length;
-        this.cart = this.cart.filter(item => item.id !== productId);
+        this.cart = this.cart.filter((item) => item.id !== productId);
         const removed = this.cart.length < initialLength;
-        
+
         if (removed) {
             this.saveCartToStorage();
         }
-        
+
         return removed;
     }
 
@@ -59,14 +59,14 @@ class CartService {
      * @returns {boolean} Success status
      */
     updateQuantity(productId, quantity) {
-        const item = this.cart.find(item => item.id === productId);
-        
+        const item = this.cart.find((item) => item.id === productId);
+
         if (!item) return false;
-        
+
         if (quantity <= 0) {
             return this.removeFromCart(productId);
         }
-        
+
         item.quantity = quantity;
         this.saveCartToStorage();
         return true;
@@ -93,7 +93,7 @@ class CartService {
      * @returns {number} Total price
      */
     getTotalPrice() {
-        return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        return this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     }
 
     /**
@@ -116,7 +116,9 @@ class CartService {
      * Save cart to localStorage
      */
     saveCartToStorage() {
-        const storageKey = (window.Config && window.Config.storage && window.Config.storage.cart) || 'tralashop_cart';
+        const storageKey =
+            (window.Config && window.Config.storage && window.Config.storage.cart) ||
+            'tralashop_cart';
         Utils.storage.set(storageKey, this.cart);
     }
 
@@ -124,7 +126,9 @@ class CartService {
      * Load cart from localStorage
      */
     loadCartFromStorage() {
-        const storageKey = (window.Config && window.Config.storage && window.Config.storage.cart) || 'tralashop_cart';
+        const storageKey =
+            (window.Config && window.Config.storage && window.Config.storage.cart) ||
+            'tralashop_cart';
         const savedCart = Utils.storage.get(storageKey, []);
         this.cart = Array.isArray(savedCart) ? savedCart : [];
     }
@@ -136,4 +140,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.CartService = CartService;
 }
-

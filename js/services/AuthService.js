@@ -32,7 +32,7 @@ class AuthService {
 
         // Check if user already exists
         const users = Utils.storage.get('tralashop_users', []);
-        if (users.find(u => u.email === email)) {
+        if (users.find((u) => u.email === email)) {
             return { success: false, message: 'Email already registered' };
         }
 
@@ -42,7 +42,7 @@ class AuthService {
             email: email,
             name: name,
             password: this.hashPassword(password), // In production, use proper hashing
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
         };
 
         users.push(newUser);
@@ -67,7 +67,7 @@ class AuthService {
         }
 
         const users = Utils.storage.get('tralashop_users', []);
-        const user = users.find(u => u.email === email);
+        const user = users.find((u) => u.email === email);
 
         if (!user) {
             return { success: false, message: 'Invalid email or password' };
@@ -140,7 +140,7 @@ class AuthService {
         let hash = 0;
         for (let i = 0; i < password.length; i++) {
             const char = password.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
+            hash = (hash << 5) - hash + char;
             hash = hash & hash; // Convert to 32bit integer
         }
         return hash.toString();
@@ -153,4 +153,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.AuthService = AuthService;
 }
-

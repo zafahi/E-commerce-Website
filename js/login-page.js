@@ -7,15 +7,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const authService = new AuthService();
     const notificationService = new NotificationService();
-    
+
     // Check if already logged in, redirect to home
     if (authService.isLoggedIn()) {
         window.location.href = 'index.html';
         return;
     }
-    
+
     let isLoginMode = true;
-    
+
     // Get elements
     const form = document.getElementById('login-form');
     const title = document.getElementById('login-title');
@@ -26,20 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('login-email');
     const passwordInput = document.getElementById('login-password');
     const nameInput = document.getElementById('login-name');
-    
+
     // Tab switching
-    tabs.forEach(tab => {
+    tabs.forEach((tab) => {
         tab.addEventListener('click', (e) => {
             const mode = e.target.dataset.mode;
             isLoginMode = mode === 'login';
             switchMode(isLoginMode);
         });
     });
-    
+
     // Switch between login and register mode
     function switchMode(isLogin) {
         isLoginMode = isLogin;
-        
+
         if (isLogin) {
             title.textContent = 'Login';
             subtitle.textContent = 'Welcome back! Please login to your account.';
@@ -56,15 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
             tabs[1].classList.add('active');
         }
     }
-    
+
     // Form submission
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const email = emailInput.value.trim();
         const password = passwordInput.value;
         const name = nameInput.value.trim();
-        
+
         if (isLoginMode) {
             const result = authService.login(email, password);
             if (result.success) {
@@ -89,18 +89,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-    
+
     // Focus on email input
     if (emailInput) {
         emailInput.focus();
     }
-    
+
     // Initialize theme if saved
-    const storageKey = (window.Config && window.Config.storage && window.Config.storage.theme) || 'tralashop_theme';
+    const storageKey =
+        (window.Config && window.Config.storage && window.Config.storage.theme) ||
+        'tralashop_theme';
     const savedTheme = Utils.storage.get(storageKey, 'light');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
         document.documentElement.setAttribute('data-theme', 'dark');
     }
 });
-

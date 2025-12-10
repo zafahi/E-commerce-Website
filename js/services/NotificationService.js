@@ -35,7 +35,7 @@ class NotificationService {
             success: 'fas fa-check-circle',
             error: 'fas fa-exclamation-circle',
             warning: 'fas fa-exclamation-triangle',
-            info: 'fas fa-info-circle'
+            info: 'fas fa-info-circle',
         };
 
         const iconElement = toastContent.querySelector('i');
@@ -106,4 +106,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.NotificationService = NotificationService;
 }
-

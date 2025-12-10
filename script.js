@@ -1,9 +1,9 @@
 /**
  * TralaShop - Main Application
  * Premium Computer Parts & Tech E-Commerce Platform
- * 
+ *
  * Architecture: Modular, Cloud-Ready, Production-Grade
- * 
+ *
  * Note: Dependencies are loaded via <script> tags in index.html
  * This ensures proper loading order for browser compatibility
  */
@@ -23,14 +23,14 @@ function checkDependencies() {
         'ProductCard',
         'CartSidebar',
     ];
-    
-    const missing = required.filter(dep => typeof window[dep] === 'undefined');
-    
+
+    const missing = required.filter((dep) => typeof window[dep] === 'undefined');
+
     if (missing.length > 0) {
         console.warn('Missing dependencies:', missing);
         return false;
     }
-    
+
     return true;
 }
 
@@ -43,21 +43,21 @@ class TralaShop {
         this.productService = null;
         this.cartService = null;
         this.notificationService = null;
-        
+
         // Components
         this.loadingScreen = null;
         this.cartSidebar = null;
-        
+
         // State
         this.currentFilter = 'all';
         this.searchTimeout = null;
         this.isLoading = false;
         this.theme = 'light';
-        
+
         // Wait for dependencies to load
         this.init();
     }
-    
+
     /**
      * Initialize application
      */
@@ -69,7 +69,7 @@ class TralaShop {
                 this.initializeApp();
             });
         };
-        
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
@@ -85,7 +85,7 @@ class TralaShop {
             callback();
             return;
         }
-        
+
         if (retries > 0) {
             setTimeout(() => {
                 this.waitForDependencies(callback, retries - 1, delay);
@@ -110,11 +110,11 @@ class TralaShop {
     hideLoadingScreenFallback() {
         const loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen) {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 500);
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 500);
         }
     }
 
@@ -128,14 +128,14 @@ class TralaShop {
             this.cartService = new CartService();
             this.notificationService = new NotificationService();
             this.authService = new AuthService();
-            
+
             // Initialize components
             this.loadingScreen = new LoadingScreen();
             this.cartSidebar = new CartSidebar(this.cartService, this.notificationService);
-            
+
             // Show loading screen
             this.loadingScreen.show();
-            
+
             // Initialize features
             this.initializeProducts();
             this.initializeTheme();
@@ -144,9 +144,10 @@ class TralaShop {
             this.setupScrollEffects();
             this.animateStats();
             this.createParticles();
-            
+
             // Hide loading screen after initialization
-            const loadingDelay = (window.Config && window.Config.ui && window.Config.ui.loadingDelay) || 2000;
+            const loadingDelay =
+                (window.Config && window.Config.ui && window.Config.ui.loadingDelay) || 2000;
             setTimeout(() => {
                 if (this.loadingScreen) {
                     this.loadingScreen.hide();
@@ -154,7 +155,7 @@ class TralaShop {
                     this.hideLoadingScreenFallback();
                 }
             }, loadingDelay);
-            
+
             // Make app globally available
             window.tralaShop = this;
         } catch (error) {
@@ -171,7 +172,7 @@ class TralaShop {
         this.productService.initializeProducts();
         this.renderProducts();
     }
-    
+
     /**
      * Setup event listeners
      */
@@ -188,18 +189,21 @@ class TralaShop {
         // Search functionality
         const searchInput = Utils.getElement('search-input');
         const searchBtn = document.querySelector('.search-btn');
-        
+
         if (searchInput) {
-            searchInput.addEventListener('input', Utils.debounce((e) => {
-            this.handleSearch(e.target.value);
-            }));
-        
-        searchInput.addEventListener('focus', () => {
+            searchInput.addEventListener(
+                'input',
+                Utils.debounce((e) => {
+                    this.handleSearch(e.target.value);
+                })
+            );
+
+            searchInput.addEventListener('focus', () => {
                 const suggestions = Utils.getElement('search-suggestions');
                 if (suggestions) suggestions.style.display = 'block';
             });
         }
-        
+
         if (searchBtn) {
             searchBtn.addEventListener('click', () => {
                 const query = searchInput?.value || '';
@@ -208,43 +212,45 @@ class TralaShop {
         }
 
         // Product filters
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        document.querySelectorAll('.filter-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const filter = e.target.dataset.filter;
                 this.filterProducts(filter);
-                
+
                 // Update active filter button
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                document
+                    .querySelectorAll('.filter-btn')
+                    .forEach((b) => b.classList.remove('active'));
                 e.target.classList.add('active');
             });
         });
-        
+
         // Category cards - trigger search instead of filter
-        document.querySelectorAll('.category-card').forEach(card => {
+        document.querySelectorAll('.category-card').forEach((card) => {
             card.addEventListener('click', () => {
                 const category = card.dataset.category;
                 const categoryName = Utils.formatCategory(category);
-                
+
                 // Set search input value
                 const searchInput = Utils.getElement('search-input');
                 if (searchInput) {
                     searchInput.value = categoryName;
                 }
-                
+
                 // Trigger search
                 this.handleSearch(categoryName);
-                
+
                 // Scroll to products section
                 const productsSection = document.querySelector('.products-section');
                 if (productsSection) {
                     Utils.smoothScrollTo(productsSection, 100);
                 }
-                
+
                 // Show notification
                 this.notificationService.info(`Searching for ${categoryName}...`);
             });
         });
-        
+
         // Load more products
         const loadMoreBtn = Utils.getElement('load-more-btn');
         if (loadMoreBtn) {
@@ -255,7 +261,7 @@ class TralaShop {
         const newsletterForm = Utils.getElement('newsletter-form');
         if (newsletterForm) {
             newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+                e.preventDefault();
                 this.handleNewsletterSignup(e);
             });
         }
@@ -264,8 +270,8 @@ class TralaShop {
         const backToTop = Utils.getElement('back-to-top');
         if (backToTop) {
             backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         }
 
         // Mobile menu toggle
@@ -275,7 +281,7 @@ class TralaShop {
         }
 
         // Hero buttons
-        document.querySelectorAll('.hero-buttons .btn').forEach(btn => {
+        document.querySelectorAll('.hero-buttons .btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 if (btn.textContent.includes('Shop Now')) {
                     const productsSection = document.querySelector('.products-section');
@@ -287,7 +293,7 @@ class TralaShop {
                 }
             });
         });
-        
+
         // Product card interactions (delegated)
         document.addEventListener('click', (e) => {
             // Add to cart (only from overlay, not main button)
@@ -296,7 +302,7 @@ class TralaShop {
                 const productId = parseInt(btn.dataset.productId);
                 this.addToCart(productId);
             }
-            
+
             // Quick view
             if (e.target.closest('.quick-view')) {
                 const btn = e.target.closest('.quick-view');
@@ -324,7 +330,7 @@ class TralaShop {
                     this.cartSidebar.close();
                 }
             }
-            
+
             // Ctrl/Cmd + K opens search
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
@@ -348,80 +354,87 @@ class TralaShop {
      */
     setupScrollEffects() {
         let lastScrollY = window.scrollY;
-        
-        window.addEventListener('scroll', Utils.throttle(() => {
-            const header = Utils.getElement('header');
-            const nav = Utils.getElement('nav');
-            const backToTop = Utils.getElement('back-to-top');
-            
-            // Header scroll effect
-            if (window.scrollY > 100) {
-                header?.classList.add('scrolled');
-                nav?.classList.add('scrolled');
-            } else {
-                header?.classList.remove('scrolled');
-                nav?.classList.remove('scrolled');
-            }
-            
-            // Hide/show header on scroll
-            if (window.scrollY > lastScrollY && window.scrollY > 200) {
-                if (header) header.style.transform = 'translateY(-100%)';
-                if (nav) nav.style.transform = 'translateY(-100%)';
-            } else {
-                if (header) header.style.transform = 'translateY(0)';
-                if (nav) nav.style.transform = 'translateY(0)';
-            }
-            
-            // Back to top button
-            if (backToTop) {
-            if (window.scrollY > 500) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
+
+        window.addEventListener(
+            'scroll',
+            Utils.throttle(() => {
+                const header = Utils.getElement('header');
+                const nav = Utils.getElement('nav');
+                const backToTop = Utils.getElement('back-to-top');
+
+                // Header scroll effect
+                if (window.scrollY > 100) {
+                    header?.classList.add('scrolled');
+                    nav?.classList.add('scrolled');
+                } else {
+                    header?.classList.remove('scrolled');
+                    nav?.classList.remove('scrolled');
                 }
-            }
-            
-            lastScrollY = window.scrollY;
-        }, 100));
-        
+
+                // Hide/show header on scroll
+                if (window.scrollY > lastScrollY && window.scrollY > 200) {
+                    if (header) header.style.transform = 'translateY(-100%)';
+                    if (nav) nav.style.transform = 'translateY(-100%)';
+                } else {
+                    if (header) header.style.transform = 'translateY(0)';
+                    if (nav) nav.style.transform = 'translateY(0)';
+                }
+
+                // Back to top button
+                if (backToTop) {
+                    if (window.scrollY > 500) {
+                        backToTop.classList.add('visible');
+                    } else {
+                        backToTop.classList.remove('visible');
+                    }
+                }
+
+                lastScrollY = window.scrollY;
+            }, 100)
+        );
+
         // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            rootMargin: '0px 0px -50px 0px',
         };
-        
+
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animate-in');
                 }
             });
         }, observerOptions);
-        
+
         // Observe sections for animations
-        document.querySelectorAll('.section, .category-card, .product-card, .feature-card').forEach(el => {
-            observer.observe(el);
-        });
+        document
+            .querySelectorAll('.section, .category-card, .product-card, .feature-card')
+            .forEach((el) => {
+                observer.observe(el);
+            });
     }
-    
+
     /**
      * Toggle theme
      */
     toggleTheme() {
         const body = document.body;
         const themeIcon = document.querySelector('#theme-toggle i');
-        
+
         body.classList.toggle('dark-theme');
         this.theme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-        
+
         // Update data-theme attribute for better CSS support
         document.documentElement.setAttribute('data-theme', this.theme);
-        
+
         if (themeIcon) {
             themeIcon.className = this.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
-        
-        const storageKey = (window.Config && window.Config.storage && window.Config.storage.theme) || 'tralashop_theme';
+
+        const storageKey =
+            (window.Config && window.Config.storage && window.Config.storage.theme) ||
+            'tralashop_theme';
         Utils.storage.set(storageKey, this.theme);
     }
 
@@ -429,10 +442,12 @@ class TralaShop {
      * Initialize theme from storage
      */
     initializeTheme() {
-        const storageKey = (window.Config && window.Config.storage && window.Config.storage.theme) || 'tralashop_theme';
+        const storageKey =
+            (window.Config && window.Config.storage && window.Config.storage.theme) ||
+            'tralashop_theme';
         const savedTheme = Utils.storage.get(storageKey, 'light');
         const themeIcon = document.querySelector('#theme-toggle i');
-        
+
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-theme');
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -521,8 +536,8 @@ class TralaShop {
         const userMenu = Utils.getElement('user-menu');
         if (userMenu) {
             const rect = userMenu.getBoundingClientRect();
-            dropdown.style.top = (rect.bottom + 10) + 'px';
-            dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+            dropdown.style.top = rect.bottom + 10 + 'px';
+            dropdown.style.right = window.innerWidth - rect.right + 'px';
         }
 
         // Logout button
@@ -550,34 +565,34 @@ class TralaShop {
             });
         }, 10);
     }
-    
+
     /**
      * Handle search
      * @param {string} query - Search query
      */
     handleSearch(query) {
         clearTimeout(this.searchTimeout);
-        
+
         this.searchTimeout = setTimeout(() => {
             const suggestions = Utils.getElement('search-suggestions');
-            
+
             if (!query || query.trim().length === 0) {
                 if (suggestions) {
-                suggestions.innerHTML = '';
-                suggestions.style.display = 'none';
+                    suggestions.innerHTML = '';
+                    suggestions.style.display = 'none';
                 }
                 this.renderProducts();
                 return;
             }
-            
+
             if (query.length < 2) return;
-            
+
             const filteredProducts = this.productService.searchProducts(query);
             this.showSearchSuggestions(query, filteredProducts);
             this.renderProducts(filteredProducts);
         }, Config.ui.debounceDelay);
     }
-    
+
     /**
      * Show search suggestions
      * @param {string} query - Search query
@@ -586,22 +601,26 @@ class TralaShop {
     showSearchSuggestions(query, products) {
         const suggestions = Utils.getElement('search-suggestions');
         if (!suggestions) return;
-        
+
         if (products.length === 0) {
             suggestions.innerHTML = '<div class="search-suggestion">No products found</div>';
         } else {
-            const suggestionItems = products.slice(0, 5).map(product => 
-                `<div class="search-suggestion" data-product-id="${product.id}">
+            const suggestionItems = products
+                .slice(0, 5)
+                .map(
+                    (product) =>
+                        `<div class="search-suggestion" data-product-id="${product.id}">
                     <i class="fas fa-search"></i>
                     <span>${product.name}</span>
                     <span class="suggestion-price">${Utils.formatCurrency(product.price)}</span>
                 </div>`
-            ).join('');
-            
+                )
+                .join('');
+
             suggestions.innerHTML = suggestionItems;
-            
+
             // Add click listeners to suggestions
-            suggestions.querySelectorAll('.search-suggestion').forEach(item => {
+            suggestions.querySelectorAll('.search-suggestion').forEach((item) => {
                 item.addEventListener('click', () => {
                     const productId = parseInt(item.dataset.productId);
                     const product = this.productService.getProductById(productId);
@@ -614,10 +633,10 @@ class TralaShop {
                 });
             });
         }
-        
+
         suggestions.style.display = 'block';
     }
-    
+
     /**
      * Render products
      * @param {Array} products - Products to render (optional)
@@ -625,7 +644,7 @@ class TralaShop {
     renderProducts(products = null) {
         const productsGrid = Utils.getElement('products-grid');
         if (!productsGrid) return;
-        
+
         const productsToRender = products || this.productService.getFilteredProducts();
         ProductCard.render(productsToRender, productsGrid);
     }
@@ -639,7 +658,7 @@ class TralaShop {
         this.productService.filterProducts(filter);
         this.renderProducts();
     }
-    
+
     /**
      * Add product to cart
      * @param {number} productId - Product ID
@@ -647,7 +666,7 @@ class TralaShop {
     addToCart(productId) {
         const product = this.productService.getProductById(productId);
         if (!product) return;
-        
+
         const success = this.cartService.addToCart(product);
         if (success) {
             this.cartSidebar.update();
@@ -660,23 +679,23 @@ class TralaShop {
      */
     loadMoreProducts() {
         if (this.isLoading) return;
-        
+
         this.isLoading = true;
         const loadMoreBtn = Utils.getElement('load-more-btn');
         if (loadMoreBtn) {
             loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
             loadMoreBtn.disabled = true;
         }
-        
+
         setTimeout(() => {
             this.productService.loadMoreProducts();
             this.renderProducts();
-            
+
             if (loadMoreBtn) {
                 loadMoreBtn.innerHTML = '<i class="fas fa-plus"></i> Load More Products';
                 loadMoreBtn.disabled = false;
             }
-            
+
             this.isLoading = false;
         }, 1000);
     }
@@ -688,7 +707,7 @@ class TralaShop {
     showQuickView(productId) {
         const product = this.productService.getProductById(productId);
         if (!product) return;
-        
+
         const modal = Utils.createElement('div', { className: 'quick-view-modal' });
         modal.innerHTML = `
             <div class="modal-overlay"></div>
@@ -708,7 +727,7 @@ class TralaShop {
                         <p class="product-description">${product.description}</p>
                         <div class="product-specs">
                             <h4>Specifications:</h4>
-                            ${product.specifications.map(spec => `<span class="spec-tag">${spec}</span>`).join('')}
+                            ${product.specifications.map((spec) => `<span class="spec-tag">${spec}</span>`).join('')}
                         </div>
                         <div class="product-price">
                             <span class="current-price">${Utils.formatCurrency(product.price)}</span>
@@ -722,19 +741,23 @@ class TralaShop {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         setTimeout(() => modal.classList.add('active'), 10);
-        
+
         // Event listeners
-        modal.querySelector('.modal-close')?.addEventListener('click', () => this.closeQuickView(modal));
-        modal.querySelector('.modal-overlay')?.addEventListener('click', () => this.closeQuickView(modal));
+        modal
+            .querySelector('.modal-close')
+            ?.addEventListener('click', () => this.closeQuickView(modal));
+        modal
+            .querySelector('.modal-overlay')
+            ?.addEventListener('click', () => this.closeQuickView(modal));
         modal.querySelector('.add-to-cart-modal')?.addEventListener('click', () => {
             this.addToCart(product.id);
             this.closeQuickView(modal);
         });
     }
-    
+
     /**
      * Close quick view modal
      * @param {HTMLElement} modal - Modal element
@@ -752,9 +775,9 @@ class TralaShop {
     handleNewsletterSignup(e) {
         const emailInput = Utils.getElement('newsletter-email');
         if (!emailInput) return;
-        
+
         const email = emailInput.value.trim();
-        
+
         if (Utils.isValidEmail(email)) {
             this.notificationService.success('Thank you for subscribing to our newsletter!');
             emailInput.value = '';
@@ -768,9 +791,9 @@ class TralaShop {
      */
     animateStats() {
         const stats = document.querySelectorAll('.stat-number');
-        
+
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const target = parseInt(entry.target.dataset.target);
                     Utils.animateNumber(entry.target, target);
@@ -778,36 +801,36 @@ class TralaShop {
                 }
             });
         });
-        
-        stats.forEach(stat => observer.observe(stat));
+
+        stats.forEach((stat) => observer.observe(stat));
     }
-    
+
     /**
      * Create particle effect
      */
     createParticles() {
         const particlesContainer = document.querySelector('.hero-particles');
         if (!particlesContainer) return;
-        
+
         const particleCount = 50;
-        
+
         for (let i = 0; i < particleCount; i++) {
             const particle = Utils.createElement('div', { className: 'particle' });
             particle.style.left = Math.random() * 100 + '%';
             particle.style.top = Math.random() * 100 + '%';
             particle.style.animationDelay = Math.random() * 20 + 's';
-            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
             particlesContainer.appendChild(particle);
         }
     }
-    
+
     /**
      * Toggle mobile menu
      */
     toggleMobileMenu() {
         const nav = Utils.getElement('nav');
         const toggle = Utils.getElement('mobile-menu-toggle');
-        
+
         nav?.classList.toggle('mobile-active');
         toggle?.classList.toggle('active');
     }
@@ -818,8 +841,8 @@ class TralaShop {
      */
     startCheckoutProcess(cart) {
         const modal = Utils.createElement('div', { className: 'checkout-modal' });
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
+        const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
         modal.innerHTML = `
             <div class="checkout-overlay"></div>
                 <div class="checkout-content">
@@ -827,12 +850,16 @@ class TralaShop {
                     <h2><i class="fas fa-credit-card"></i> Checkout</h2>
                     <div class="checkout-summary">
                         <h3>Order Summary</h3>
-                    ${cart.map(item => `
+                    ${cart
+                        .map(
+                            (item) => `
                             <div class="checkout-item">
                                 <span>${item.name} x ${item.quantity}</span>
                             <span>${Utils.formatCurrency(item.price * item.quantity)}</span>
                             </div>
-                        `).join('')}
+                        `
+                        )
+                        .join('')}
                         <div class="checkout-total">
                         <strong>Total: ${Utils.formatCurrency(total)}</strong>
                         </div>
@@ -849,14 +876,20 @@ class TralaShop {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         setTimeout(() => modal.classList.add('active'), 10);
-        
+
         // Event listeners
-        modal.querySelector('.checkout-close')?.addEventListener('click', () => this.closeCheckout(modal));
-        modal.querySelector('.checkout-overlay')?.addEventListener('click', () => this.closeCheckout(modal));
-        modal.querySelector('.complete-order')?.addEventListener('click', () => this.completeOrder(modal));
+        modal
+            .querySelector('.checkout-close')
+            ?.addEventListener('click', () => this.closeCheckout(modal));
+        modal
+            .querySelector('.checkout-overlay')
+            ?.addEventListener('click', () => this.closeCheckout(modal));
+        modal
+            .querySelector('.complete-order')
+            ?.addEventListener('click', () => this.completeOrder(modal));
     }
 
     /**
@@ -870,7 +903,7 @@ class TralaShop {
         this.closeCheckout(modal);
         this.cartSidebar.close();
     }
-    
+
     /**
      * Close checkout modal
      * @param {HTMLElement} modal - Checkout modal
@@ -883,18 +916,20 @@ class TralaShop {
 }
 
 // Initialize application - wait for all scripts to load
-(function() {
+(function () {
     // Wait for DOM and all scripts
     function initApp() {
         // Double check dependencies
-        if (typeof window.Config === 'undefined' || 
+        if (
+            typeof window.Config === 'undefined' ||
             typeof window.Utils === 'undefined' ||
-            typeof window.ProductService === 'undefined') {
+            typeof window.ProductService === 'undefined'
+        ) {
             console.warn('Some dependencies not loaded, retrying...');
             setTimeout(initApp, 100);
             return;
         }
-        
+
         try {
             const app = new TralaShop();
             window.tralaShop = app;
@@ -911,7 +946,7 @@ class TralaShop {
             }
         }
     }
-    
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initApp);
     } else {
@@ -923,11 +958,12 @@ class TralaShop {
 // Service Worker Registration (for PWA features)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
+        navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {
                 console.log('Service Worker registered:', registration);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Service Worker registration failed:', error);
             });
     });

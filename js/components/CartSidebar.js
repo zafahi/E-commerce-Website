@@ -14,7 +14,7 @@ class CartSidebar {
         this.cartIcon = Utils.getElement('cart-icon');
         this.cartClose = Utils.getElement('cart-close');
         this.checkoutButton = Utils.getElement('checkout-button');
-        
+
         this.init();
     }
 
@@ -25,20 +25,22 @@ class CartSidebar {
         if (this.cartIcon) {
             this.cartIcon.addEventListener('click', () => this.toggle());
         }
-        
+
         if (this.cartClose) {
             this.cartClose.addEventListener('click', () => this.close());
         }
-        
+
         if (this.checkoutButton) {
             this.checkoutButton.addEventListener('click', () => this.handleCheckout());
         }
 
         // Close on outside click
         document.addEventListener('click', (e) => {
-            if (this.isOpen() && 
-                !e.target.closest('.cart-sidebar') && 
-                !e.target.closest('.cart-icon')) {
+            if (
+                this.isOpen() &&
+                !e.target.closest('.cart-sidebar') &&
+                !e.target.closest('.cart-icon')
+            ) {
                 this.close();
             }
         });
@@ -120,7 +122,9 @@ class CartSidebar {
             return;
         }
 
-        this.cartContent.innerHTML = cart.map(item => `
+        this.cartContent.innerHTML = cart
+            .map(
+                (item) => `
             <div class="cart-item">
                 <div class="cart-item-image">
                     <img src="${item.image}" alt="${item.name}">
@@ -138,7 +142,9 @@ class CartSidebar {
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
-        `).join('');
+        `
+            )
+            .join('');
 
         // Attach event listeners
         this.attachEventListeners();
@@ -159,10 +165,10 @@ class CartSidebar {
      */
     attachEventListeners() {
         // Quantity controls
-        this.cartContent.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+        this.cartContent.querySelectorAll('.quantity-btn.plus').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const productId = parseInt(btn.dataset.productId);
-                const item = this.cartService.getCart().find(item => item.id === productId);
+                const item = this.cartService.getCart().find((item) => item.id === productId);
                 if (item) {
                     this.cartService.updateQuantity(productId, item.quantity + 1);
                     this.update();
@@ -170,10 +176,10 @@ class CartSidebar {
             });
         });
 
-        this.cartContent.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+        this.cartContent.querySelectorAll('.quantity-btn.minus').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const productId = parseInt(btn.dataset.productId);
-                const item = this.cartService.getCart().find(item => item.id === productId);
+                const item = this.cartService.getCart().find((item) => item.id === productId);
                 if (item) {
                     this.cartService.updateQuantity(productId, item.quantity - 1);
                     this.update();
@@ -182,7 +188,7 @@ class CartSidebar {
         });
 
         // Remove items
-        this.cartContent.querySelectorAll('.remove-item').forEach(btn => {
+        this.cartContent.querySelectorAll('.remove-item').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const productId = parseInt(btn.dataset.productId);
                 this.cartService.removeFromCart(productId);
@@ -203,7 +209,7 @@ class CartSidebar {
 
         // Trigger checkout event
         const event = new CustomEvent('checkout', {
-            detail: { cart: this.cartService.getCart() }
+            detail: { cart: this.cartService.getCart() },
         });
         document.dispatchEvent(event);
     }
@@ -215,4 +221,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.CartSidebar = CartSidebar;
 }
-

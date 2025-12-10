@@ -94,7 +94,7 @@ class LoginModal {
         }
 
         // Tab switching
-        this.modal.querySelectorAll('.login-tab').forEach(tab => {
+        this.modal.querySelectorAll('.login-tab').forEach((tab) => {
             tab.addEventListener('click', (e) => {
                 const mode = e.target.dataset.mode;
                 this.switchMode(mode === 'register');
@@ -222,4 +222,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.LoginModal = LoginModal;
 }
-

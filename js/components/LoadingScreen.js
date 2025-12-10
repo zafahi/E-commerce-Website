@@ -14,11 +14,11 @@ class LoadingScreen {
      */
     show() {
         if (!this.element) return;
-        
+
         this.element.style.display = 'flex';
         this.element.style.opacity = '1';
         document.body.style.overflow = 'hidden';
-        
+
         this.animateProgress();
     }
 
@@ -27,9 +27,9 @@ class LoadingScreen {
      */
     hide() {
         if (!this.element) return;
-        
+
         this.element.style.opacity = '0';
-        
+
         setTimeout(() => {
             this.element.style.display = 'none';
             document.body.style.overflow = 'auto';
@@ -41,7 +41,7 @@ class LoadingScreen {
      */
     animateProgress() {
         if (!this.progressBar) return;
-        
+
         let progress = 0;
         const interval = setInterval(() => {
             progress += Math.random() * 15;
@@ -60,4 +60,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.LoadingScreen = LoadingScreen;
 }
-

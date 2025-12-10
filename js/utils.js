@@ -30,11 +30,11 @@ class Utils {
      */
     static throttle(func, limit) {
         let inThrottle;
-        return function(...args) {
+        return function (...args) {
             if (!inThrottle) {
                 func.apply(this, args);
                 inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
+                setTimeout(() => (inThrottle = false), limit);
             }
         };
     }
@@ -48,7 +48,7 @@ class Utils {
     static formatCurrency(amount, currency = 'USD') {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: currency
+            currency: currency,
         }).format(amount);
     }
 
@@ -71,24 +71,24 @@ class Utils {
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 !== 0;
         const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-        
+
         let stars = '';
-        
+
         // Full stars
         for (let i = 0; i < fullStars; i++) {
             stars += '<i class="fas fa-star"></i>';
         }
-        
+
         // Half star
         if (hasHalfStar) {
             stars += '<i class="fas fa-star-half-alt"></i>';
         }
-        
+
         // Empty stars
         for (let i = 0; i < emptyStars; i++) {
             stars += '<i class="far fa-star"></i>';
         }
-        
+
         return stars;
     }
 
@@ -104,7 +104,7 @@ class Utils {
             monitors: 'Monitors',
             peripherals: 'Peripherals',
             storage: 'Storage',
-            memory: 'Memory'
+            memory: 'Memory',
         };
         return categoryMap[category] || category.charAt(0).toUpperCase() + category.slice(1);
     }
@@ -129,7 +129,7 @@ class Utils {
         const targetPosition = element.offsetTop - offset;
         window.scrollTo({
             top: targetPosition,
-            behavior: 'smooth'
+            behavior: 'smooth',
         });
     }
 
@@ -218,7 +218,7 @@ class Utils {
                 return false;
             }
         },
-        
+
         get(key, defaultValue = null) {
             try {
                 const item = localStorage.getItem(key);
@@ -228,7 +228,7 @@ class Utils {
                 return defaultValue;
             }
         },
-        
+
         remove(key) {
             try {
                 localStorage.removeItem(key);
@@ -238,7 +238,7 @@ class Utils {
                 return false;
             }
         },
-        
+
         clear() {
             try {
                 localStorage.clear();
@@ -247,7 +247,7 @@ class Utils {
                 console.error('Error clearing localStorage:', error);
                 return false;
             }
-        }
+        },
     };
 }
 
@@ -261,4 +261,3 @@ if (typeof module !== 'undefined' && module.exports) {
         window.Utils = Utils;
     }
 }
-

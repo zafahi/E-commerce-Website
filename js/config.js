@@ -8,7 +8,7 @@ const Config = {
     api: {
         baseUrl: window.API_BASE_URL || 'https://api.tralashop.com',
         timeout: 10000,
-        retryAttempts: 3
+        retryAttempts: 3,
     },
 
     // Storage Keys
@@ -16,7 +16,7 @@ const Config = {
         cart: 'tralashop_cart',
         wishlist: 'tralashop_wishlist',
         theme: 'tralashop_theme',
-        reviews: 'tralashop_reviews'
+        reviews: 'tralashop_reviews',
     },
 
     // UI Configuration
@@ -24,13 +24,13 @@ const Config = {
         loadingDelay: 2000,
         toastDuration: 3000,
         animationDuration: 300,
-        debounceDelay: 300
+        debounceDelay: 300,
     },
 
     // Pagination
     pagination: {
         itemsPerPage: 12,
-        loadMoreCount: 4
+        loadMoreCount: 4,
     },
 
     // Feature Flags
@@ -38,8 +38,8 @@ const Config = {
         wishlist: true,
         reviews: true,
         comparison: true,
-        filters: true
-    }
+        filters: true,
+    },
 };
 
 // Export for module systems, fallback to window for browser
@@ -48,4 +48,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.Config = Config;
 }
-
