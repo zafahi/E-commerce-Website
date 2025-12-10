@@ -1,0 +1,32 @@
+{
+  "name": "tralalero-tralashop",
+  "version": "1.0.0",
+  "description": "Premium Computer Parts & Tech E-Commerce Platform - Cloud-Ready Web Application",
+  "main": "script.js",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . -l 3000",
+    "build": "echo 'Build complete - static site ready for deployment'",
+    "lint": "eslint js/ script.js || true",
+    "format": "prettier --write \"**/*.{js,html,css}\" || true",
+    "test": "echo 'Tests would run here'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "e-commerce",
+    "computer-parts",
+    "tech",
+    "cloud",
+    "vercel"
+  ],
+  "author": "TralaShop Team",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
