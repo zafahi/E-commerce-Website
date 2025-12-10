@@ -1185,8 +1185,8 @@ aside {
 }
 
 .add-to-cart {
-    width: 100%;
-    padding: 0.875rem;
+    width: auto;
+    padding: 0.75rem 1.5rem;
     background: var(--primary);
     color: var(--white);
     border: none;
